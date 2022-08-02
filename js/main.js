@@ -1,5 +1,6 @@
 const carrito = JSON.parse(localStorage.getItem('carrito')) ?? [];
 document.getElementById('total-carrito').innerHTML = carrito.length;
+
 const productos = [
     {id: 1, name: 'Remera León', price: 2000, img: "images/remera-leon.png", category: "Remeras"},
     {id: 2, name: 'Remera Roja', price: 1500, img: "images/remera-roja.png", category: "Remeras"},
