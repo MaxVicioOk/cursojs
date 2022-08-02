@@ -1,5 +1,6 @@
 const carrito = JSON.parse(localStorage.getItem('carrito')) ?? [];
-document.getElementById('total-carrito').innerHTML = carrito.length;
+const costoTotal = carrito.reduce((acumulador, producto) => acumulador + producto.price, 0); // total de la suma de precios de productos en el carrito
+document.getElementById("total-carrito").innerHTML = carrito.length + " - $"+costoTotal;
 
 const productos = [
     {id: 1, name: 'Remera León', price: 2000, img: "images/remera-leon.png", category: "Remeras"},
@@ -7,6 +8,17 @@ const productos = [
     {id: 3, name: 'Pantalón Azul', price: 3400, img: "images/pantalon-azul.png", category: "Pantalones"},
     {id: 4, name: 'Pantalón Gris', price: 4600, img: "images/pantalon-gris.png", category: "Pantalones"}
 ]
+
+// Carrito PopUp
+carrito.forEach((producto) => {
+    document.getElementById("tabla-carrito").innerHTML += `<tr>
+    <th scope="row">${producto.id}</th>
+    <td>${producto.name}</td>
+    <td><img src="${producto.img}" style="height: 100px" ></td>
+    <td>${producto.price}</td>
+    <td><button type="button" class="btn btn-secondary borrar-producto" info-borrar="${producto}">Remove</button></td>
+</tr>`
+})
 
 // Creación de CARDS
 productos.forEach((producto) => {
@@ -64,9 +76,28 @@ for (const botonFiltro of document.getElementsByClassName('filtro-categoria')){
 for(const producto of productos) {
     document.getElementById("btn-agregar"+producto.id).addEventListener("click", () => {
         carrito.push(producto);
-        document.getElementById("total-carrito").innerHTML = carrito.length;
+        localStorage.setItem("carrito", JSON.stringify(carrito));
+        const costoTotal = carrito.reduce((acumulador, producto) => acumulador + producto.price, 0)
+        document.getElementById("total-carrito").innerHTML = carrito.length + " - $"+costoTotal;
         console.log(carrito)
+        document.getElementById("tabla-carrito").innerHTML = ``
+        carrito.forEach((producto) => {
+            document.getElementById("tabla-carrito").innerHTML += `<tr>
+            <th scope="row">${producto.id}</th>
+            <td>${producto.name}</td>
+            <td><img src="${producto.img}" style="height: 100px" ></td>
+            <td>${producto.price}</td>
+            <td><button type="button" class="btn btn-secondary borrar-producto" info-borrar="${producto}">Remove</button></td>
+        </tr>`
+        })
     })
+}
+
+for(const botonBorrar of document.querySelectorAll('.borrar-producto')){
+    botonBorrar.onclick = (e) => {
+        productoParaBorrar = e.target.getAttribute('info-borrar');
+        eliminarDelCarrito(productoParaBorrar)
+    }
 }
 
 // Función de borrado del carrito
