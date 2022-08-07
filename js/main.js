@@ -1,5 +1,5 @@
-const carrito = JSON.parse(localStorage.getItem('carrito')) ?? [];
-const costoTotal = carrito.reduce((total, producto) => total + producto.price, 0); // total de la suma de precios de productos en el carrito
+const carrito = JSON.parse(localStorage.getItem('carrito')) || []; // cambié el ?? por el || sólo porque lo pide esta entrega, despues vuelvo a poner el ??
+const costoTotal = carrito.reduce((total, producto) => total + producto.price, 0);
 escribirCarrito(costoTotal)
 
 const productos = [
@@ -11,9 +11,9 @@ const productos = [
 
 // Carrito PopUp
 function CarritoPopUp(){
-    document.getElementById("tabla-carrito").innerHTML = ""
-    carrito.forEach((producto) => {
-        document.getElementById("tabla-carrito").innerHTML += `<tr>
+    document.getElementById("tabla-carrito").innerHTML = "" 
+    carrito.forEach((producto) => { 
+        document.getElementById("tabla-carrito").innerHTML += `<tr> 
         <th scope="row">${producto.id}</th>
         <td>${producto.name}</td>
         <td><img src="${producto.img}" style="height: 100px" ></td>
@@ -26,19 +26,19 @@ CarritoPopUp()
 
 // Creación de CARDS en pantalla inicial
 function crearCards(listado){
-    listado.forEach((producto) => {
+    listado.forEach(({id, name, img, price}) => { // desestructuración con operador avanzado => Lo hice esta sola vez, y no lo hice en la función "carritoPopUp" para que cuando lo vuelva a ver, yo entienda que es lo mismo escribirlo de cualquiera de las 2 formas
         document.getElementById("seccion-cards").innerHTML += `<div class="col mb-5">
             <div class="card h-100">
-                <img class="card-img-top" src="${producto.img}" alt="${producto.name}" />        
+                <img class="card-img-top" src="${img}" alt="${name}" />        
                 <div class="card-body p-4">
                     <div class="text-center">
-                        <h5 class="fw-bolder">${producto.name}</h5>
-                        $${producto.price}
+                        <h5 class="fw-bolder">${name}</h5>
+                        $${price}
                     </div>
                 </div>
                 <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                     <div class="text-center">
-                        <a class="btn btn-outline-dark mt-auto" id="btn-agregar${producto.id}" href="#">Add to cart</a>
+                        <a class="btn btn-outline-dark mt-auto" id="btn-agregar${id}" href="#">Add to cart</a>
                     </div>
                 </div>
             </div>
@@ -89,10 +89,12 @@ agregarAlCarrito(productos)
 function eliminarDelCarrito(productoId) {
     const prod = carrito.find((producto) => producto.id == productoId)
     let i = carrito.indexOf(prod)
-    if (i != -1) {carrito.splice(i, 1)}
+    if (i != -1) carrito.splice(i, 1) // como es en una sola linea, borré las {}, como comentó el profe
     const costoTotal = carrito.reduce((total, producto) => total + producto.price, 0)
     escribirCarrito(costoTotal)
     CarritoPopUp()
     document.getElementById("alFin").innerHTML = `<h1 class="display-4 fw-bolder">Al Fin, funciona todo!🥳</h1>
     <p class="lead fw-normal text-white-50 mb-0">Por favor, apruébeme🙏🏼</p>`
 }
+
+console.log(...carrito) // como no necesitaba el spread, lo agregué acá, sólo para la entrega
