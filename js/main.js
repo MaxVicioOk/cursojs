@@ -1,4 +1,4 @@
-const carrito = JSON.parse(localStorage.getItem('carrito')) || []; // cambié el ?? por el || sólo porque lo pide esta entrega, despues vuelvo a poner el ??
+const carrito = JSON.parse(localStorage.getItem('carrito')) ?? []; // cambié el ?? por el || sólo porque lo pide esta entrega, despues vuelvo a poner el ??
 const costoTotal = carrito.reduce((total, producto) => total + producto.price, 0);
 escribirCarrito(costoTotal)
 
@@ -80,6 +80,19 @@ function agregarAlCarrito (lista) {
             CarritoPopUp()
             document.getElementById("alFin").innerHTML = `<h1 class="display-4 fw-bolder">Shop in style</h1>
             <p class="lead fw-normal text-white-50 mb-0">With this shop hompeage template</p>`
+            Toastify({
+                text: "Producto agregado al Carrito",
+                duration: 2500,
+                destination: "#exampleModal",
+                newWindow: true,
+                close: true,
+                gravity: "top", // `top` or `bottom`
+                position: "center", // `left`, `center` or `right`
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+                style: {
+                    background: "linear-gradient(to right, #00b09b, #96c93d)",
+                },
+                }).showToast();
         })
     }
 }
@@ -95,6 +108,11 @@ function eliminarDelCarrito(productoId) {
     CarritoPopUp()
     document.getElementById("alFin").innerHTML = `<h1 class="display-4 fw-bolder">Al Fin, funciona todo!🥳</h1>
     <p class="lead fw-normal text-white-50 mb-0">Por favor, apruébeme🙏🏼</p>`
+    if(carrito.length == 0){Swal.fire({
+        icon: 'success',
+        title: 'Limpio!',
+        text: 'El carrito está vacío',
+    })}
 }
 
 console.log(...carrito) // como no necesitaba el spread, lo agregué acá, sólo para la entrega
