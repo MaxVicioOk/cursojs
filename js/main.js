@@ -2,12 +2,16 @@ const carrito = JSON.parse(localStorage.getItem('carrito')) ?? []; // cambié el
 const costoTotal = carrito.reduce((total, producto) => total + producto.price, 0);
 escribirCarrito(costoTotal)
 
-const productos = [
-    {id: 1, name: 'Remera León', price: 1700, img: "images/remera-leon.png", category: "Remeras"},
-    {id: 2, name: 'Remera Roja', price: 1590, img: "images/remera-roja.png", category: "Remeras"},
-    {id: 3, name: 'Pantalón Azul', price: 3430, img: "images/pantalon-azul.png", category: "Pantalones"},
-    {id: 4, name: 'Pantalón Gris', price: 4370, img: "images/pantalon-gris.png", category: "Pantalones"}
-]
+// llamando al .json para cargar las cards
+const productosJSON = () => {
+fetch ('js/productos.json')
+    .then (response => response.json())
+    .then (data => {
+        crearCards(data)
+        agregarAlCarrito(data)
+    }
+)}
+productosJSON()
 
 // Carrito PopUp
 function CarritoPopUp(){
@@ -15,8 +19,8 @@ function CarritoPopUp(){
     carrito.forEach((producto) => { 
         document.getElementById("tabla-carrito").innerHTML += `<tr> 
         <th scope="row">${producto.id}</th>
-        <td>${producto.name}</td>
-        <td><img src="${producto.img}" style="height: 100px" ></td>
+        <td>${producto.title}</td>
+        <td><img src="${producto.thumbnail}" style="height: 100px" ></td>
         <td>${producto.price}</td>
         <td><button type="button" class="btn btn-secondary borrar-producto" onclick="eliminarDelCarrito(${producto.id})" info-borrar="${producto.id}">Remove</button></td>
     </tr>`
@@ -26,13 +30,13 @@ CarritoPopUp()
 
 // Creación de CARDS en pantalla inicial
 function crearCards(listado){
-    listado.forEach(({id, name, img, price}) => { // desestructuración con operador avanzado => Lo hice esta sola vez, y no lo hice en la función "carritoPopUp" para que cuando lo vuelva a ver, yo entienda que es lo mismo escribirlo de cualquiera de las 2 formas
+    listado.forEach(({id, title, thumbnail, price}) => { // desestructuración con operador avanzado => Lo hice esta sola vez, y no lo hice en la función "carritoPopUp" para que cuando lo vuelva a ver, yo entienda que es lo mismo escribirlo de cualquiera de las 2 formas
         document.getElementById("seccion-cards").innerHTML += `<div class="col mb-5">
             <div class="card h-100">
-                <img class="card-img-top" src="${img}" alt="${name}" />        
+                <img class="card-img-top" src="${thumbnail}" alt="${title}" />        
                 <div class="card-body p-4">
                     <div class="text-center">
-                        <h5 class="fw-bolder">${name}</h5>
+                        <h5 class="fw-bolder">${title}</h5>
                         $${price}
                     </div>
                 </div>
@@ -45,7 +49,6 @@ function crearCards(listado){
         </div>`
     })
 }
-crearCards(productos)
 
 // Creo esta función para no repetir codigo
 function escribirCarrito(parametroCosto){
@@ -56,7 +59,7 @@ function escribirCarrito(parametroCosto){
 // Función de filtrado
 function filtroPorCategoria(categoria){
     document.getElementById("seccion-cards").innerHTML = "" //borrando las cards de todos los productos
-    const productosFiltrados = productos.filter((producto) => producto.category === categoria) //Filtrando los productos
+    const productosFiltrados = productos.filter((producto) => producto.query === categoria) //Filtrando los productos
     crearCards(productosFiltrados)
     agregarAlCarrito(productosFiltrados)
 }
@@ -96,7 +99,6 @@ function agregarAlCarrito (lista) {
         })
     }
 }
-agregarAlCarrito(productos)
 
 // Función de borrado del carrito
 function eliminarDelCarrito(productoId) {

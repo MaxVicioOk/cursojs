@@ -1,0 +1,6 @@
+[
+    {"id": 1, "title": "Remera León", "price": 1700, "thumbnail": "images/remera-leon.png", "query": "Remera"},
+    {"id": 2, "title": "Remera Roja", "price": 1590, "thumbnail": "images/remera-roja.png", "query": "Remera"},
+    {"id": 3, "title": "Pantalón Azul", "price": 3430, "thumbnail": "images/pantalon-azul.png", "query": "Pantalon"},
+    {"id": 4, "title": "Pantalón Gris", "price": 4370, "thumbnail": "images/pantalon-gris.png", "query": "Pantalon"}
+]
