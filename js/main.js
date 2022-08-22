@@ -1,20 +1,23 @@
-const carrito = JSON.parse(localStorage.getItem('carrito')) ?? []; // cambié el ?? por el || sólo porque lo pide esta entrega, despues vuelvo a poner el ??
+const carrito = JSON.parse(localStorage.getItem('carrito')) ?? [];
 const costoTotal = carrito.reduce((total, producto) => total + producto.price, 0);
 escribirCarrito(costoTotal)
+const productos = []
 
 // llamando al .json para cargar las cards
 const productosJSON = () => {
 fetch ('js/productos.json')
     .then (response => response.json())
     .then (data => {
-        crearCards(data)
+        crearCards(data),
         agregarAlCarrito(data)
-    }
-)}
+        productos.push(...data)
+    })
+}
 productosJSON()
 
+
 // Carrito PopUp
-function CarritoPopUp(){
+function carritoPopUp(){
     document.getElementById("tabla-carrito").innerHTML = "" 
     carrito.forEach((producto) => { 
         document.getElementById("tabla-carrito").innerHTML += `<tr> 
@@ -22,11 +25,11 @@ function CarritoPopUp(){
         <td>${producto.title}</td>
         <td><img src="${producto.thumbnail}" style="height: 100px" ></td>
         <td>${producto.price}</td>
-        <td><button type="button" class="btn btn-secondary borrar-producto" onclick="eliminarDelCarrito(${producto.id})" info-borrar="${producto.id}">Remove</button></td>
+        <td><button type="button" class="btn btn-secondary borrar-producto" onclick="eliminarDelCarrito(${producto.id})">Remove</button></td>
     </tr>`
     })
 }
-CarritoPopUp()
+carritoPopUp()
 
 // Creación de CARDS en pantalla inicial
 function crearCards(listado){
@@ -59,7 +62,7 @@ function escribirCarrito(parametroCosto){
 // Función de filtrado
 function filtroPorCategoria(categoria){
     document.getElementById("seccion-cards").innerHTML = "" //borrando las cards de todos los productos
-    const productosFiltrados = productos.filter((producto) => producto.query === categoria) //Filtrando los productos
+    const productosFiltrados = productos.filter((producto) => producto.category === categoria) //Filtrando los productos
     crearCards(productosFiltrados)
     agregarAlCarrito(productosFiltrados)
 }
@@ -79,8 +82,7 @@ function agregarAlCarrito (lista) {
             carrito.push(producto);
             const costoTotal = carrito.reduce((total, producto) => total + producto.price, 0)
             escribirCarrito(costoTotal);
-            console.log(carrito)
-            CarritoPopUp()
+            carritoPopUp()
             document.getElementById("alFin").innerHTML = `<h1 class="display-4 fw-bolder">Shop in style</h1>
             <p class="lead fw-normal text-white-50 mb-0">With this shop hompeage template</p>`
             Toastify({
@@ -107,7 +109,7 @@ function eliminarDelCarrito(productoId) {
     if (i != -1) carrito.splice(i, 1) // como es en una sola linea, borré las {}, como comentó el profe
     const costoTotal = carrito.reduce((total, producto) => total + producto.price, 0)
     escribirCarrito(costoTotal)
-    CarritoPopUp()
+    carritoPopUp()
     document.getElementById("alFin").innerHTML = `<h1 class="display-4 fw-bolder">Al Fin, funciona todo!🥳</h1>
     <p class="lead fw-normal text-white-50 mb-0">Por favor, apruébeme🙏🏼</p>`
     if(carrito.length == 0){Swal.fire({
